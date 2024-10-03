@@ -375,20 +375,9 @@ clean_column &lt;- function(df, column_name) {
   return(df)
 }
 
-# URL do arquivo Excel
-url &lt;- &quot;https://static.heritage.org/index/data/2024/2024_indexofeconomicfreedom_data.xlsx&quot;
 
-# Usar GET para baixar o arquivo
-response &lt;- GET(url)
-
-# Criar um arquivo temporário para salvar o conteúdo baixado
-temp_file &lt;- tempfile(fileext = &quot;.xlsx&quot;)
-
-# Escrever o conteúdo da resposta no arquivo temporário
-writeBin(content(response, &quot;raw&quot;), temp_file)
-
-# Ler o arquivo Excel ignorando a primeira linha e usando a segunda linha como títulos
-economic_freedom &lt;- read_xlsx(temp_file, col_names = TRUE, skip = 1)
+# Lendo os dados através da biblioteca rio do link
+economic_freedom &lt;- import(&quot;https://static.heritage.org/index/data/2024/2024_indexofeconomicfreedom_data.xlsx&quot;,col_names = TRUE, skip = 1)
 
 # Renomeando a primeira coluna para &#39;country&#39;;
 economic_freedom &lt;- economic_freedom %&gt;% rename(country = 1)
@@ -401,21 +390,8 @@ for (col in colnames(economic_freedom)[3:16]) {
 ## ℹ In argument: `Overall Score = round(as.numeric(`Overall Score`), 1)`.
 ## Caused by warning:
 ## ! NAs introduzidos por coerção</code></pre>
-<pre class="r"><code># Lendo os dados CPI, renomeando a primeira coluna e removendo espaços em branco dos nomes de países;
-# URL do arquivo Excel do CPI 2023
-url_cpi &lt;- &quot;https://images.transparencycdn.org/images/CPI2023_Global_Results__Trends.xlsx&quot;
-
-# Usar GET para baixar o arquivo
-response_cpi &lt;- GET(url_cpi)
-
-# Criar um arquivo temporário para salvar o conteúdo baixado
-temp_file_cpi &lt;- tempfile(fileext = &quot;.xlsx&quot;)
-
-# Escrever o conteúdo da resposta no arquivo temporário
-writeBin(content(response_cpi, &quot;raw&quot;), temp_file_cpi)
-
-# Ler o arquivo Excel do CPI (ajustar &#39;skip&#39; se precisar ignorar algumas linhas)
-dados_cpi &lt;- read_xlsx(temp_file_cpi, col_names = TRUE, skip=1)
+<pre class="r"><code># Ler o arquivo Excel do CPI (ajustar &#39;skip&#39; se precisar ignorar algumas linhas)
+dados_cpi &lt;- import(&quot;https://images.transparencycdn.org/images/CPI2023_Global_Results__Trends.xlsx&quot;, col_names = TRUE, skip=1)
 
 dados_cpi &lt;- dados_cpi %&gt;%
   select(1, 4) %&gt;%
